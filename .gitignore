@@ -221,3 +221,45 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ===== Added for ground-station-platform =====
+# --- Secrets & credentials: never commit ---
+.env
+.env.*
+!.env.example
+*.key
+*-key.pem
+*.p12
+*.pfx
+*credentials*.json
+*-sa-key.json
+gha-creds-*.json
+.aws/
+kubeconfig
+*.kubeconfig
+
+# --- Terraform (state can contain secrets) ---
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# --- PKI lab: private keys stay on this laptop ---
+pki/**/private/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
