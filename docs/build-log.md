@@ -67,3 +67,35 @@ security controls:
   standalone downloads need a manual checksum check.
 - SSH host fingerprints protect against connecting to an impostor server.
   It's the same trust problem that TLS certificates solve.
+
+
+## Stage 2 — Ground Station API and Docker (28 Nov 2026)
+
+**What I did**
+- Added a FastAPI service that predicts ISS passes over a latitude/longitude
+  using Skyfield, with `/passes`, `/healthz` and Prometheus `/metrics`.
+  The application code was written with AI assistance; I reviewed it, ran
+  it and can explain how it works.
+- Wrote a script that downloads current ISS orbit data (TLE) from CelesTrak
+  and checks it is valid before replacing the old file.
+- Managed dependencies with uv and a lock file; 16 pytest tests pass, and
+  ruff lint and format checks are clean.
+- Built a multi-stage Docker image (331 MB) that runs as a non-root user and
+  includes a HEALTHCHECK. I confirmed the container reported "healthy",
+  that `id` showed uid 999 rather than root, and that /app contained only
+  the virtual environment.
+
+**What went wrong**
+- The bundled orbit data was a 2008 placeholder, which gives meaningless
+  predictions. I replaced it with current data and the API now reports how
+  old the data is.
+- The pre-commit trailing-whitespace hook blocked my first commit because
+  CelesTrak pads the TLE name line with spaces. Instead of just accepting the
+  hook's fix, I changed the download script to strip trailing whitespace, so
+  future updates pass the check automatically.
+
+**What I learned**
+- TLE orbit data goes out of date within days, so data freshness has to be
+  part of the design.
+- The container logs showed health checks from 127.0.0.1 (inside the
+  container) and my request from 172.17.0.1 (Docker's bridge gateway).
