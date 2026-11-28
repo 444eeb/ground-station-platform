@@ -1,0 +1,39 @@
+[project]
+name = "ground-station"
+version = "0.1.0"
+description = "Ground Station API: predicts ISS passes over a location"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.165",
+    "uvicorn[standard]>=0.54",
+    "skyfield>=1.55",
+    "prometheus-client>=0.26",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2",
+    "httpx2>=2.16",
+    "ruff>=0.17",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # Known upstream warning in Skyfield with NumPy 2.5; not from our code.
+    "ignore:Setting the dtype on a NumPy array:DeprecationWarning:skyfield",
+]
